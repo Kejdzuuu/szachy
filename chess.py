@@ -4,12 +4,26 @@ import figures
 class Game:
 
     def __init__(self):
-        
+        player1 = Player("white")
+        player2 = Player("black")
+        self.queue = [player1, player2]
+        self.counter = 0
+
+    def takeTurn(self):
+        self.queue[self.counter].move()
+        self.counter = (self.counter + 1) % 2
+
 
 class Player:
 
     def __init__(self, color):
         self.color = color
+        self.figures = []
+        # figures.Knight(2,2, board, "white", )
+
+
+    def move(self):
+        return 0
 
 class ChessBoard:
 
@@ -20,8 +34,8 @@ class ChessBoard:
         self.grid_height = self.height / self.boardSize
         self.grid_width = self.width / self.boardSize
         self.screen = screen
-
         self.colors = (color1, color2)
+        self.grid = []
 
 
     def draw(self):
@@ -72,7 +86,7 @@ pygame.init()
 size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
 board = ChessBoard(screen, width, height, color1, color2)
-knight = figures.Knight(2, 2, board)
+knight = figures.Knight(2, 2, board, "white")
 move = [0,0]
 
 while True:

@@ -2,11 +2,24 @@ import pygame
 
 class ChessPiece:
 
-    def __init__(self, x, y, board, color):
+
+
+    def __init__(self, x, y, board, color, player):
+        white = (0, 0, 0)
+        black = (255, 255, 255)
         self.x = x
         self.y = y
         self.board = board
-        self.color = color
+        self.player = player
+
+        if color == "white":
+            self.color = white
+        else:
+            self.color = black
+
+        self.board.grid.append(self)
+        self.player.figures.append(self)
+
 
     def isLegal(self, new_x, new_y):
         return 0
