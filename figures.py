@@ -37,3 +37,18 @@ class Knight(ChessPiece):
         rect_y = (self.y + 1 / 4) * self.board.grid_height
         rect = (rect_y, rect_x, self.board.grid_height/2, self.board.grid_width/2)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+
+class TheKing(ChessPiece):
+
+    def isLegal(self, new_x, new_y):
+        delta_x = new_x - self.x
+        delta_y = new_y - self.y
+        if abs(delta_x) <= 1 and abs(delta_y) <=1:
+            return True
+        return False
+
+    def draw(self):
+        rect_x = (self.x + 1 / 4) * self.board.grid_width
+        rect_y = (self.y + 1 / 4) * self.board.grid_height
+        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*2/3)
+        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
