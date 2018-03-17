@@ -65,3 +65,19 @@ class TheKing(ChessPiece):
         rect_y = (self.y + 1 / 4) * self.board.grid_height
         rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*2/3)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+
+class TheQueen(ChessPiece):
+
+    def isLegal(self, new_x, new_y):
+        delta_x = new_x - self.x
+        delta_y = new_y - self.y
+        if (not (abs(delta_x) == 0 and abs(delta_y) == 0)):
+            if (abs(delta_x) == abs(delta_y)) or (abs(delta_x) == 0 and abs(delta_y) > 0) or (abs(delta_y) == 0 and abs(delta_x) > 0):
+                return True
+        return False
+
+    def draw(self):
+        rect_x = (self.x + 1 / 4) * self.board.grid_width
+        rect_y = (self.y + 1 / 4) * self.board.grid_height
+        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width/4)
+        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
