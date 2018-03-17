@@ -22,32 +22,32 @@ class ChessBoard:
 
     def pickHighlightColor(self, color_no):
         color_R = self.colors[color_no][0]
-        if (color_R > 245):
-            color_R -= 10
+        if (color_R > 250):
+            color_R -= 5
         else:
-            color_R += 10
+            color_R += 5
 
-        color_G = self.colors[0][1]
-        if (color_G > 245):
-            color_G -= 10
+        color_G = self.colors[color_no][1]
+        if (color_G > 250):
+            color_G -= 5
         else:
-            color_G += 10
+            color_G += 5
 
-        color_B = self.colors[0][1]
-        if (color_B > 245):
-            color_B -= 10
+        color_B = self.colors[color_no][1]
+        if (color_B > 250):
+            color_B -= 5
         else:
-            color_B += 10
+            color_B += 5
 
         color = (color_R, color_G, color_B)
         return color
 
     def highlight(self, x, y):
-        color = pickHighlightColor()
-
-
-        rect = ((i % self.boardSize) * rect_height, int(i / self.boardSize) * rect_width, rect_height, rect_width)
-        pygame.draw.rect(screen, self.colors[(i + int(i / self.boardSize)) % 2], rect)
+        color = self.pickHighlightColor((x + y) % 2)
+        rect_x = x * self.grid_width
+        rect_y = y * self.grid_height
+        rect = (rect_y, rect_x, self.grid_height, self.grid_width)
+        pygame.draw.rect(screen, color, rect)
 
 
 class ChessPiece:
@@ -97,11 +97,13 @@ size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
 board = ChessBoard(width, height, color1, color2)
 knight = Knight(2, 2, board)
+move = [0,0]
 
 while True:
-    move = [0,0]
+
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+        if event.type == pygame.QUIT:
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 move[1] += 1
@@ -112,10 +114,11 @@ while True:
             if event.key == pygame.K_DOWN:
                 move[0] += 1
             if event.key == pygame.K_RETURN:
-                Knight.move(move[0], move[1])
+                knight.move(move[0], move[1])
 
 
     board.draw()
+    board.highlight(move[0], move[1])
     knight.draw()
 
 
