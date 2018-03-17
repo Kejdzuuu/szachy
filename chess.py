@@ -1,14 +1,25 @@
 import pygame, sys
+import figures
 
+class Game:
+
+    def __init__(self):
+        
+
+class Player:
+
+    def __init__(self, color):
+        self.color = color
 
 class ChessBoard:
 
-    def __init__(self, height: object, width: object, color1: object = (0, 0, 0), color2: object = (255, 255, 255)) -> object:
+    def __init__(self, screen, height: object, width: object, color1: object = (0, 0, 0), color2: object = (255, 255, 255)) -> object:
         self.height = height
         self.width = width
         self.boardSize = 8
         self.grid_height = self.height / self.boardSize
         self.grid_width = self.width / self.boardSize
+        self.screen = screen
 
         self.colors = (color1, color2)
 
@@ -50,41 +61,6 @@ class ChessBoard:
         pygame.draw.rect(screen, color, rect)
 
 
-class ChessPiece:
-
-    def __init__(self, x, y, board):
-        self.x = x
-        self.y = y
-        self.board = board
-
-    def isLegal(self, new_x, new_y):
-        return 0
-
-    def move(self, new_x, new_y):
-
-        if(self.isLegal(new_x, new_y)):
-            self.x = new_x
-            self.y = new_y
-
-class Knight(ChessPiece):
-
-    def isLegal(self, new_x, new_y):
-        delta_x = new_x - self.x
-        delta_y = new_y - self.y
-        if abs(delta_x) == 1:
-            if abs(delta_y) == 2:
-                return True
-        if abs(delta_y) == 1:
-            if abs(delta_x) == 2:
-                return True
-
-        return False
-
-    def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_y, rect_x, self.board.grid_height/2, self.board.grid_width/2)
-        pygame.draw.rect(screen, (0, 0, 0), rect)
 
 
 
@@ -95,8 +71,8 @@ color2 = (135, 99, 1)
 pygame.init()
 size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
-board = ChessBoard(width, height, color1, color2)
-knight = Knight(2, 2, board)
+board = ChessBoard(screen, width, height, color1, color2)
+knight = figures.Knight(2, 2, board)
 move = [0,0]
 
 while True:
