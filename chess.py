@@ -115,6 +115,8 @@ while True:
                 move[0] += 1
             if event.key == pygame.K_RETURN:
                 knight.move(move[0], move[1])
+            if event.key == pygame.K_ESCAPE:
+                sys.exit()
 
 
     board.draw()
