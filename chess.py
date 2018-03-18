@@ -35,6 +35,7 @@ class Game:
         else:
             return self.queue[0]
 
+
 class Player:
 
     def __init__(self, board, color, game):
