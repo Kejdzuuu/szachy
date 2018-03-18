@@ -93,7 +93,7 @@ class Player:
                             if self.selected_figure is False:
                                 self.is_figure_selected = False
                         elif self.is_figure_selected is True:
-                            if self.selected_figure.move(self.active_tile[0], self.active_tile[1]) is True:
+                            if self.selected_figure.move() is True:
                                 self.is_figure_selected = False
                                 turn_finished = True
                             else:
