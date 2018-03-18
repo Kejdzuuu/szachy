@@ -22,6 +22,23 @@ class ChessPiece:
     def is_legal(self, new_x, new_y):
         return 0
 
+    def is_occupied_by_friendly_figure(self):
+        if self.player.get_figure(self.player.active_tile, self.player.figures) is False:
+            return False
+        else:
+            return True
+
+    def is_occupied_by_enemy(self):
+        enemy_figures = self.player.game.get_enemy_figures(self.player.color)
+        figure = self.player.get_figure(self.player.active_tile, enemy_figures)
+        if figure is False:
+            return False
+        else:
+            enemy = self.player.game.get_enemy(self.player.color)
+            enemy.remove_figure(figure)
+            return True
+
+
     def move(self, new_x, new_y):
 
         if self.is_legal(new_x, new_y):
@@ -37,14 +54,19 @@ class Knight(ChessPiece):
     def is_legal(self, new_x, new_y):
         delta_x = new_x - self.x
         delta_y = new_y - self.y
+        check = True
+        if self.is_occupied_by_friendly_figure() is True:
+            return False
         if abs(delta_x) == 1:
             if abs(delta_y) == 2:
-                return True
+                check = True
         if abs(delta_y) == 1:
             if abs(delta_x) == 2:
+                check = True
+        if check is True:
+            if self.is_occupied_by_enemy() is not False:
                 return True
-
-        return False
+        return check
 
     def draw(self):
         rect_x = (self.x + 1 / 4) * self.board.grid_width
@@ -57,7 +79,11 @@ class TheKing(ChessPiece):
     def is_legal(self, new_x, new_y):
         delta_x = new_x - self.x
         delta_y = new_y - self.y
+        if self.is_occupied_by_friendly_figure() is True:
+            return False
         if abs(delta_x) <= 1 and abs(delta_y) <=1:
+            if self.is_occupied_by_enemy() is not False:
+                return True
             return True
         return False
 

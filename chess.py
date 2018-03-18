@@ -11,8 +11,8 @@ class Game:
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        player1 = Player(self.board, "white")
-        player2 = Player(self.board, "black")
+        player1 = Player(self.board, "white", self)
+        player2 = Player(self.board, "black", self)
         self.queue = [player1, player2]
         self.counter = 0
         self.active_player = player1
@@ -23,9 +23,22 @@ class Game:
         self.counter = (self.counter + 1) % 2
         self.active_player = self.queue[self.counter]
 
+    def get_enemy_figures(self, color):
+        if color == 'white':
+            return self.queue[1].figures
+        else:
+            return self.queue[0].figures
+
+    def get_enemy(self, color):
+        if color == 'white':
+            return self.queue[1]
+        else:
+            return self.queue[0]
+
 class Player:
 
-    def __init__(self, board, color):
+    def __init__(self, board, color, game):
+        self.game = game
         self.color = color
         self.figures = []
         self.board = board
@@ -42,12 +55,16 @@ class Player:
             figures.Knight(0, 7, self.board, self.color, self)
             figures.TheKing(1, 7, self.board, self.color, self)
 
-    def get_figure(self, active_tile):
-        for figure in self.figures:
+    def get_figure(self, active_tile, figures):
+        for figure in figures:
             if figure.x == active_tile[0] and figure.y == active_tile[1]:
                 return figure
 
-        return 0
+        return False
+
+    def remove_figure(self, figure):
+        self.figures.remove(figure)
+        self.board.grid.remove(figure)
 
     def move(self):
         turn_finished = False
@@ -58,23 +75,29 @@ class Player:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RIGHT:
-                        self.active_tile[0] += 1
+                        if self.board.check_boundaries(self.active_tile[0] + 1) is True:
+                            self.active_tile[0] += 1
                     if event.key == pygame.K_LEFT:
-                        self.active_tile[0] -= 1
+                        if self.board.check_boundaries(self.active_tile[0] - 1) is True:
+                            self.active_tile[0] -= 1
                     if event.key == pygame.K_UP:
-                        self.active_tile[1] -= 1
+                        if self.board.check_boundaries(self.active_tile[1] - 1) is True:
+                            self.active_tile[1] -= 1
                     if event.key == pygame.K_DOWN:
-                        self.active_tile[1] += 1
+                        if self.board.check_boundaries(self.active_tile[1] + 1) is True:
+                            self.active_tile[1] += 1
                     if event.key == pygame.K_RETURN:
                         if self.is_figure_selected is False:
                             self.is_figure_selected = True
-                            self.selected_figure = self.get_figure(self.active_tile)
-                            if self.selected_figure == 0:
+                            self.selected_figure = self.get_figure(self.active_tile, self.figures)
+                            if self.selected_figure is False:
                                 self.is_figure_selected = False
                         elif self.is_figure_selected is True:
                             if self.selected_figure.move(self.active_tile[0], self.active_tile[1]) is True:
                                 self.is_figure_selected = False
                                 turn_finished = True
+                            else:
+                                self.is_figure_selected = False
 
                     if event.key == pygame.K_ESCAPE:
                         sys.exit()
@@ -82,10 +105,9 @@ class Player:
             self.board.update(self.active_tile[0], self.active_tile[1], self.is_figure_selected)
 
 
-
 class ChessBoard:
 
-    def __init__(self, screen, width, height, color1 = (0, 0, 0), color2 = (255, 255, 255)):
+    def __init__(self, screen, width, height, color1=(0, 0, 0), color2=(255, 255, 255)):
         self.height = height
         self.width = width
         self.boardSize = 8
@@ -130,7 +152,7 @@ class ChessBoard:
         rect_y = y * self.grid_height
         rect = (rect_x, rect_y, self.grid_width, self.grid_height)
         print(x, y)
-        pygame.draw.rect(self.screen, color, rect)
+        pygame.draw.rect(self.screen, color, rect, 5)
 
     def highlight(self, x, y):
         color = (255,255,255)
@@ -150,6 +172,12 @@ class ChessBoard:
 
         pygame.display.flip()
 
+    def check_boundaries(self, x):
+        if x < 0:
+            return False
+        if x >= self.boardSize:
+            return False
+        return True
 
 
 game = Game()
