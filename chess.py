@@ -151,7 +151,6 @@ class ChessBoard:
         rect_x = x * self.grid_width
         rect_y = y * self.grid_height
         rect = (rect_x, rect_y, self.grid_width, self.grid_height)
-        print(x, y)
         pygame.draw.rect(self.screen, color, rect, 5)
 
     def highlight(self, x, y):
@@ -159,7 +158,6 @@ class ChessBoard:
         rect_x = x * self.grid_width
         rect_y = y * self.grid_height
         rect = (rect_x, rect_y, self.grid_width, self.grid_height)
-        print(x, y)
         pygame.draw.rect(self.screen, color, rect)
 
     def update(self, x, y, is_selected):

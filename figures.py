@@ -75,6 +75,7 @@ class Knight(ChessPiece):
         rect = (rect_x, rect_y, self.board.grid_width/2, self.board.grid_height/2)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
 
+
 class TheKing(ChessPiece):
 
     def is_legal(self):
@@ -90,9 +91,10 @@ class TheKing(ChessPiece):
         rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*2/3)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
 
+
 class TheQueen(ChessPiece):
 
-    def isLegal(self, new_x, new_y):
+    def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
         delta_y = self.player.active_tile[1] - self.y
         if (not (abs(delta_x) == 0 and abs(delta_y) == 0)):
