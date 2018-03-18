@@ -49,16 +49,21 @@ class Player:
             self.active_tile = [0, 0]
             figures.Rook(0, 0, self.board, self)
             figures.Knight(1, 0, self.board, self)
+            figures.Bishop(2, 0, self.board, self)
             figures.TheKing(3, 0, self.board, self)
             figures.TheQueen(4, 0, self.board, self)
+            figures.Bishop(5, 0, self.board, self)
             figures.Knight(6, 0, self.board, self)
-            figures.Rook(5, 0, self.board, self)
+            figures.Rook(7, 0, self.board, self)
+            figures.Pawn(4, 1, self.board, self)
         else:
             self.active_tile = [0, 7]
             figures.Rook(0, 7, self.board, self)
             figures.Knight(1, 7, self.board, self)
+            figures.Bishop(2, 7, self.board, self)
             figures.TheKing(3, 7, self.board, self)
             figures.TheQueen(4, 7, self.board, self)
+            figures.Bishop(5, 7, self.board, self)
             figures.Knight(6, 7, self.board, self)
             figures.Rook(7, 7, self.board, self)
 
