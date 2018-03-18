@@ -107,3 +107,34 @@ class TheQueen(ChessPiece):
         rect_y = (self.y + 1 / 4) * self.board.grid_height
         rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height/4)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+
+class Rook(ChessPiece):
+
+    def is_legal(self):
+        delta_x = self.player.active_tile[0] - self.x
+        delta_y = self.player.active_tile[1] - self.y
+        if bool(delta_x) ^ bool(delta_y):
+                return True
+        return False
+
+    def draw(self):
+        rect_x = (self.x + 1 / 4) * self.board.grid_width
+        rect_y = (self.y + 1 / 4) * self.board.grid_height
+        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*3/4)
+        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+
+class Bishop(ChessPiece):
+
+    def is_legal(self):
+        delta_x = self.player.active_tile[0] - self.x
+        delta_y = self.player.active_tile[1] - self.y
+        if abs(delta_x) > 0:
+            if (abs(delta_x) == abs(delta_y)):
+                return True
+        return False
+
+    def draw(self):
+        rect_x = (self.x + 1 / 4) * self.board.grid_width
+        rect_y = (self.y + 1 / 4) * self.board.grid_height
+        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*2/4)
+        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
