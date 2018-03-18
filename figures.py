@@ -117,7 +117,7 @@ class Rook(ChessPiece):
     def draw(self):
         rect_x = (self.x + 1 / 4) * self.board.grid_width
         rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*3/4)
+        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*3/4)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
 
 
@@ -134,5 +134,5 @@ class Bishop(ChessPiece):
     def draw(self):
         rect_x = (self.x + 1 / 4) * self.board.grid_width
         rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*2/4)
+        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*2/4)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
