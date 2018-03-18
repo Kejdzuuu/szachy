@@ -11,6 +11,7 @@ class ChessPiece:
         self.board = board
         self.player = player
         self.color = self.player.color
+        self.first_move = 1
 
         self.board.grid.append(self)
         self.player.figures.append(self)
@@ -135,4 +136,38 @@ class Bishop(ChessPiece):
         rect_x = (self.x + 1 / 4) * self.board.grid_width
         rect_y = (self.y + 1 / 4) * self.board.grid_height
         rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*2/4)
+        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+
+
+class Pawn(ChessPiece):
+
+    def is_legal(self):
+        delta_x = self.player.active_tile[0] - self.x
+        delta_y = self.player.active_tile[1] - self.y
+
+        if self.color == "white":
+            if delta_x == 0:
+                if delta_y == 1 or (delta_y == 2 and self.first_move):
+                    self.first_move = 0
+                    return True
+            if delta_y == 1 and abs(delta_x) == 1:
+                if self.player.is_occupied_by_enemy is not False:
+                    self.first_move = 0
+                    return True
+        else:
+            if delta_x == 0:
+                if delta_y == -1 or (delta_y == -2 and self.first_move):
+                    self.first_move = 0
+                    return True
+            if delta_y == -1 and abs(delta_x) == 1:
+                if self.player.is_occupied_by_enemy is not False:
+                    self.first_move = 0
+                    return True
+        return False
+        
+
+    def draw(self):
+        rect_x = (self.x + 1 / 4) * self.board.grid_width
+        rect_y = (self.y + 1 / 4) * self.board.grid_height
+        rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*2/4)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
