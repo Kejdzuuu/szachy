@@ -1,4 +1,4 @@
-import pygame
+import pygame, os
 
 
 class ChessPiece:
@@ -12,9 +12,12 @@ class ChessPiece:
         self.player = player
         self.color = self.player.color
         self.first_move = 1
-
+        self.image = self.load_image()
         self.board.grid.append(self)
         self.player.figures.append(self)
+
+    def load_image(self):
+        return 0
 
     def is_legal(self):
         return 0
@@ -55,6 +58,11 @@ class ChessPiece:
 
 class Knight(ChessPiece):
 
+    def load_image(self):
+        image = pygame.image.load(os.path.join('szachy', 'img', 'epicknight.png'))
+        image = pygame.transform.scale(image, (int(self.board.grid_width), int(self.board.grid_height)))
+        return image
+
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
         delta_y = self.player.active_tile[1] - self.y
@@ -67,10 +75,10 @@ class Knight(ChessPiece):
         return False
 
     def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_x, rect_y, self.board.grid_width/2, self.board.grid_height/2)
-        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+        rect_x = self.x * self.board.grid_width
+        rect_y = self.y * self.board.grid_height
+        self.board.screen.blit(self.image, (rect_x, rect_y))
+
 
 
 class TheKing(ChessPiece):

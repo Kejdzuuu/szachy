@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os
 import figures
 
 
@@ -188,7 +188,6 @@ class ChessBoard:
         if x >= self.boardSize:
             return False
         return True
-
 
 game = Game()
 move = [0,0]
