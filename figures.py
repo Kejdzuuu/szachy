@@ -3,23 +3,19 @@ import pygame
 
 class ChessPiece:
 
-    def __init__(self, x, y, board, color, player):
+    def __init__(self, x, y, board, player):
         white = (0, 0, 0)
         black = (255, 255, 255)
         self.x = x
         self.y = y
         self.board = board
         self.player = player
-
-        if color == "white":
-            self.color = white
-        else:
-            self.color = black
+        self.color = self.player.color
 
         self.board.grid.append(self)
         self.player.figures.append(self)
 
-    def is_legal(self, coords):
+    def is_legal(self):
         return 0
 
     def try_move(self):
@@ -108,6 +104,7 @@ class TheQueen(ChessPiece):
         rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height/4)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
 
+
 class Rook(ChessPiece):
 
     def is_legal(self):
@@ -122,6 +119,7 @@ class Rook(ChessPiece):
         rect_y = (self.y + 1 / 4) * self.board.grid_height
         rect = (rect_y, rect_x, self.board.grid_height*2/3, self.board.grid_width*3/4)
         pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+
 
 class Bishop(ChessPiece):
 

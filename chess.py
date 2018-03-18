@@ -47,13 +47,13 @@ class Player:
         if color is "white":
             self.active_tile = [0, 0]
 
-            figures.Knight(0, 0, self.board, self.color, self)
-            figures.TheKing(1, 0, self.board, self.color, self)
+            figures.Knight(0, 0, self.board, self)
+            figures.TheKing(1, 0, self.board, self)
         else:
             self.active_tile = [0, 7]
 
-            figures.Knight(0, 7, self.board, self.color, self)
-            figures.TheKing(1, 7, self.board, self.color, self)
+            figures.Knight(0, 7, self.board, self)
+            figures.TheKing(1, 7, self.board, self)
 
     def get_figure(self, active_tile, figures):
         for figure in figures:
