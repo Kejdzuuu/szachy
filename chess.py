@@ -189,6 +189,11 @@ class ChessBoard:
             return False
         return True
 
+cwd = os.getcwd()
+if cwd[-6:] == "szachy":
+    cwd = cwd[0:-7]
+    os.chdir(cwd)
+
 game = Game()
 move = [0,0]
 
