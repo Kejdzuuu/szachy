@@ -6,7 +6,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
-        self.size = self.width, self.height = 800, 600
+        self.size = self.width, self.height = 800, 800
         self.screen = pygame.display.set_mode(self.size)
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
