@@ -17,10 +17,7 @@ class ChessPiece:
         self.player.figures.append(self)
 
     def load_image(self, srcname):
-        if self.color == 'black':
-            srcname = 'black' + srcname
-        else:
-            srcname = 'white' + srcname
+        srcname = self.color + srcname
         image = pygame.image.load(os.path.join('szachy', 'img', srcname))
         image = pygame.transform.scale(image, (int(self.board.grid_width), int(self.board.grid_height)))
         return image
