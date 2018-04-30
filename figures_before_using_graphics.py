@@ -16,14 +16,8 @@ class ChessPiece:
         self.board.grid.append(self)
         self.player.figures.append(self)
 
-    def load_image(self, srcname):
-        if self.color == 'black':
-            srcname = 'black' + srcname
-        else:
-            srcname = 'white' + srcname
-        image = pygame.image.load(os.path.join('szachy', 'img', srcname))
-        image = pygame.transform.scale(image, (int(self.board.grid_width), int(self.board.grid_height)))
-        return image
+    def load_image(self):
+        return 0
 
     def is_legal(self):
         return 0
@@ -61,12 +55,13 @@ class ChessPiece:
         else:
             return False
 
-    
+
 class Knight(ChessPiece):
-    srcname = 'knight.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
-    
+
+    def load_image(self):
+        image = pygame.image.load(os.path.join('szachy', 'img', 'epicknight.png'))
+        image = pygame.transform.scale(image, (int(self.board.grid_width), int(self.board.grid_height)))
+        return image
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -87,9 +82,6 @@ class Knight(ChessPiece):
 
 
 class TheKing(ChessPiece):
-    srcname = 'king.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -106,9 +98,6 @@ class TheKing(ChessPiece):
 
 
 class TheQueen(ChessPiece):
-    srcname = 'queen.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -126,9 +115,6 @@ class TheQueen(ChessPiece):
 
 
 class Rook(ChessPiece):
-    srcname = 'rook.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -145,9 +131,6 @@ class Rook(ChessPiece):
 
 
 class Bishop(ChessPiece):
-    srcname = 'bishop.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -165,9 +148,6 @@ class Bishop(ChessPiece):
 
 
 class Pawn(ChessPiece):
-    srcname = 'pawn.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
