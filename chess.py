@@ -55,7 +55,8 @@ class Player:
             figures.Bishop(5, 0, self.board, self)
             figures.Knight(6, 0, self.board, self)
             figures.Rook(7, 0, self.board, self)
-            figures.Pawn(4, 1, self.board, self)
+            for i in range(8):
+                figures.Pawn(i, 1, self.board, self)
         else:
             self.active_tile = [0, 7]
             figures.Rook(0, 7, self.board, self)
@@ -66,6 +67,8 @@ class Player:
             figures.Bishop(5, 7, self.board, self)
             figures.Knight(6, 7, self.board, self)
             figures.Rook(7, 7, self.board, self)
+            for i in range(8):
+                figures.Pawn(i, 6, self.board, self)
 
     def get_figure(self, active_tile, figures):
         for figure in figures:
@@ -77,6 +80,8 @@ class Player:
     def remove_figure(self, figure):
         self.figures.remove(figure)
         self.board.grid.remove(figure)
+        if type(figure) is figures.TheKing:
+            sys.exit()
 
     def move(self):
         turn_finished = False

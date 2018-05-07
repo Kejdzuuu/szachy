@@ -12,12 +12,13 @@ class ChessPiece:
         self.player = player
         self.color = self.player.color
         self.first_move = 1
+        self.srcname = ""
         self.image = self.load_image()
         self.board.grid.append(self)
         self.player.figures.append(self)
 
-    def load_image(self, srcname):
-        srcname = self.color + srcname
+    def load_image(self):
+        srcname = self.color + self.srcname
         image = pygame.image.load(os.path.join('szachy', 'img', srcname))
         image = pygame.transform.scale(image, (int(self.board.grid_width), int(self.board.grid_height)))
         return image
@@ -60,9 +61,9 @@ class ChessPiece:
 
     
 class Knight(ChessPiece):
-    srcname = 'knight.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
+    def load_image(self):
+        self.srcname = 'knight.png'
+        return super().load_image()
     
 
     def is_legal(self):
@@ -84,9 +85,10 @@ class Knight(ChessPiece):
 
 
 class TheKing(ChessPiece):
-    srcname = 'king.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
+
+    def load_image(self):
+        self.srcname = 'king.png'
+        return super().load_image()
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -96,16 +98,16 @@ class TheKing(ChessPiece):
         return False
 
     def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*2/3)
-        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+        rect_x = self.x * self.board.grid_width
+        rect_y = self.y * self.board.grid_height
+        self.board.screen.blit(self.image, (rect_x, rect_y))
 
 
 class TheQueen(ChessPiece):
-    srcname = 'queen.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
+
+    def load_image(self):
+        self.srcname = 'queen.png'
+        return super().load_image()
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -116,16 +118,16 @@ class TheQueen(ChessPiece):
         return False
 
     def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height/4)
-        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+        rect_x = self.x * self.board.grid_width
+        rect_y = self.y * self.board.grid_height
+        self.board.screen.blit(self.image, (rect_x, rect_y))
 
 
 class Rook(ChessPiece):
-    srcname = 'rook.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
+
+    def load_image(self):
+        self.srcname = 'rook.png'
+        return super().load_image()
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -135,16 +137,16 @@ class Rook(ChessPiece):
         return False
 
     def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*3/4)
-        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+        rect_x = self.x * self.board.grid_width
+        rect_y = self.y * self.board.grid_height
+        self.board.screen.blit(self.image, (rect_x, rect_y))
 
 
 class Bishop(ChessPiece):
-    srcname = 'bishop.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
+
+    def load_image(self):
+        self.srcname = 'bishop.png'
+        return super().load_image()
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -155,16 +157,16 @@ class Bishop(ChessPiece):
         return False
 
     def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*2/4)
-        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+        rect_x = self.x * self.board.grid_width
+        rect_y = self.y * self.board.grid_height
+        self.board.screen.blit(self.image, (rect_x, rect_y))
 
 
 class Pawn(ChessPiece):
-    srcname = 'pawn.png'
-    def load_image(self, srcname):
-        return super().load_image(srcname)
+
+    def load_image(self):
+        self.srcname = 'pawn.png'
+        return super().load_image()
 
     def is_legal(self):
         delta_x = self.player.active_tile[0] - self.x
@@ -191,7 +193,6 @@ class Pawn(ChessPiece):
         return False
 
     def draw(self):
-        rect_x = (self.x + 1 / 4) * self.board.grid_width
-        rect_y = (self.y + 1 / 4) * self.board.grid_height
-        rect = (rect_x, rect_y, self.board.grid_width*2/3, self.board.grid_height*2/4)
-        pygame.draw.rect(self.board.screen, (0, 0, 0), rect)
+        rect_x = self.x * self.board.grid_width
+        rect_y = self.y * self.board.grid_height
+        self.board.screen.blit(self.image, (rect_x, rect_y))
