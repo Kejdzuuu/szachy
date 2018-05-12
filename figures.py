@@ -47,14 +47,17 @@ class ChessPiece:
         if figure is False:
             return False
         else:
-            enemy = self.player.game.get_enemy(self.player.color)
-            enemy.remove_figure(figure)
             return True
 
     def move(self, coordinate):
         if self.try_move(coordinate):
             self.x = coordinate[0]
             self.y = coordinate[1]
+            if self.is_occupied_by_enemy(coordinate) is True:
+                enemy_figures = self.player.game.get_enemy_figures(self.player.color)
+                figure = self.player.get_figure(coordinate, enemy_figures)
+                enemy = self.player.game.get_enemy(self.player.color)
+                enemy.remove_figure(figure)
             return True
         else:
             return False
