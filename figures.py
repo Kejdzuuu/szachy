@@ -26,24 +26,24 @@ class ChessPiece:
     def is_legal(self):
         return 0
 
-    def try_move(self):
-        if self.is_legal() is False:
+    def try_move(self, coordinate):
+        if self.is_legal(coordinate) is False:
             return False
-        if self.is_occupied_by_friendly_figure() is True:
+        if self.is_occupied_by_friendly_figure(coordinate) is True:
             return False
-        if self.is_occupied_by_enemy() is not False:
+        if self.is_occupied_by_enemy(coordinate) is not False:
             return True
         return True
 
-    def is_occupied_by_friendly_figure(self):
-        if self.player.get_figure(self.player.active_tile, self.player.figures) is False:
+    def is_occupied_by_friendly_figure(self, coordinate):
+        if self.player.get_figure(coordinate, self.player.figures) is False:
             return False
         else:
             return True
 
-    def is_occupied_by_enemy(self):
+    def is_occupied_by_enemy(self, coordinate):
         enemy_figures = self.player.game.get_enemy_figures(self.player.color)
-        figure = self.player.get_figure(self.player.active_tile, enemy_figures)
+        figure = self.player.get_figure(coordinate, enemy_figures)
         if figure is False:
             return False
         else:
@@ -51,10 +51,10 @@ class ChessPiece:
             enemy.remove_figure(figure)
             return True
 
-    def move(self):
-        if self.try_move():
-            self.x = self.player.active_tile[0]
-            self.y = self.player.active_tile[1]
+    def move(self, coordinate):
+        if self.try_move(coordinate):
+            self.x = coordinate[0]
+            self.y = coordinate[1]
             return True
         else:
             return False
@@ -64,11 +64,10 @@ class Knight(ChessPiece):
     def load_image(self):
         self.srcname = 'knight.png'
         return super().load_image()
-    
 
-    def is_legal(self):
-        delta_x = self.player.active_tile[0] - self.x
-        delta_y = self.player.active_tile[1] - self.y
+    def is_legal(self, coordinate):
+        delta_x = coordinate[0] - self.x
+        delta_y = coordinate[1] - self.y
         if abs(delta_x) == 1:
             if abs(delta_y) == 2:
                 return True
@@ -83,16 +82,15 @@ class Knight(ChessPiece):
         self.board.screen.blit(self.image, (rect_x, rect_y))
 
 
-
 class TheKing(ChessPiece):
 
     def load_image(self):
         self.srcname = 'king.png'
         return super().load_image()
 
-    def is_legal(self):
-        delta_x = self.player.active_tile[0] - self.x
-        delta_y = self.player.active_tile[1] - self.y
+    def is_legal(self, coordinate):
+        delta_x = coordinate[0] - self.x
+        delta_y = coordinate[1] - self.y
         if abs(delta_x) <= 1 and abs(delta_y) <=1:
             return True
         return False
@@ -109,9 +107,9 @@ class TheQueen(ChessPiece):
         self.srcname = 'queen.png'
         return super().load_image()
 
-    def is_legal(self):
-        delta_x = self.player.active_tile[0] - self.x
-        delta_y = self.player.active_tile[1] - self.y
+    def is_legal(self, coordinate):
+        delta_x = coordinate[0] - self.x
+        delta_y = coordinate[1] - self.y
         if (not (abs(delta_x) == 0 and abs(delta_y) == 0)):
             if (abs(delta_x) == abs(delta_y)) or (abs(delta_x) == 0 and abs(delta_y) > 0) or (abs(delta_y) == 0 and abs(delta_x) > 0):
                 return True
@@ -129,9 +127,9 @@ class Rook(ChessPiece):
         self.srcname = 'rook.png'
         return super().load_image()
 
-    def is_legal(self):
-        delta_x = self.player.active_tile[0] - self.x
-        delta_y = self.player.active_tile[1] - self.y
+    def is_legal(self, coordinate):
+        delta_x = coordinate[0] - self.x
+        delta_y = coordinate[1] - self.y
         if bool(delta_x) ^ bool(delta_y):
                 return True
         return False
@@ -148,9 +146,9 @@ class Bishop(ChessPiece):
         self.srcname = 'bishop.png'
         return super().load_image()
 
-    def is_legal(self):
-        delta_x = self.player.active_tile[0] - self.x
-        delta_y = self.player.active_tile[1] - self.y
+    def is_legal(self, coordinate):
+        delta_x = coordinate[0] - self.x
+        delta_y = coordinate[1] - self.y
         if abs(delta_x) > 0:
             if (abs(delta_x) == abs(delta_y)):
                 return True
@@ -168,9 +166,9 @@ class Pawn(ChessPiece):
         self.srcname = 'pawn.png'
         return super().load_image()
 
-    def is_legal(self):
-        delta_x = self.player.active_tile[0] - self.x
-        delta_y = self.player.active_tile[1] - self.y
+    def is_legal(self, coordinate):
+        delta_x = coordinate[0] - self.x
+        delta_y = coordinate[1] - self.y
 
         if self.color == "white":
             if delta_x == 0:
@@ -178,7 +176,7 @@ class Pawn(ChessPiece):
                     self.first_move = 0
                     return True
             if delta_y == 1 and abs(delta_x) == 1:
-                if self.is_occupied_by_enemy() is not False:
+                if self.is_occupied_by_enemy(coordinate) is not False:
                     self.first_move = 0
                     return True
         else:
@@ -187,7 +185,7 @@ class Pawn(ChessPiece):
                     self.first_move = 0
                     return True
             if delta_y == -1 and abs(delta_x) == 1:
-                if self.player.is_occupied_by_enemy is not False:
+                if self.is_occupied_by_enemy(coordinate) is not False:
                     self.first_move = 0
                     return True
         return False

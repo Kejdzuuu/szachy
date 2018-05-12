@@ -12,7 +12,7 @@ class Game:
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
         player1 = Player(self.board, "white", self)
-        player2 = Player(self.board, "black", self)
+        player2 = AI(self.board, "black", self)
         self.queue = [player1, player2]
         self.counter = 0
         self.active_player = player1
@@ -74,7 +74,6 @@ class Player:
         for figure in figures:
             if figure.x == active_tile[0] and figure.y == active_tile[1]:
                 return figure
-
         return False
 
     def remove_figure(self, figure):
@@ -110,7 +109,7 @@ class Player:
                             if self.selected_figure is False:
                                 self.is_figure_selected = False
                         elif self.is_figure_selected is True:
-                            if self.selected_figure.move() is True:
+                            if self.selected_figure.move(self.active_tile) is True:
                                 self.is_figure_selected = False
                                 turn_finished = True
                             else:
@@ -120,6 +119,52 @@ class Player:
                         sys.exit()
 
             self.board.update(self.active_tile[0], self.active_tile[1], self.is_figure_selected)
+
+
+class AI(Player):
+
+    def __init__(self, board, color, game):
+        self.game = game
+        self.color = color
+        self.figures = []
+        self.board = board
+        self.is_figure_selected = False
+        self.active_tile = [0, 7]
+        if color is "white":
+            figures.Rook(0, 0, self.board, self)
+            figures.Knight(1, 0, self.board, self)
+            figures.Bishop(2, 0, self.board, self)
+            figures.TheKing(3, 0, self.board, self)
+            figures.TheQueen(4, 0, self.board, self)
+            figures.Bishop(5, 0, self.board, self)
+            figures.Knight(6, 0, self.board, self)
+            figures.Rook(7, 0, self.board, self)
+            for i in range(8):
+                figures.Pawn(i, 1, self.board, self)
+        else:
+            figures.Rook(0, 7, self.board, self)
+            figures.Knight(1, 7, self.board, self)
+            figures.Bishop(2, 7, self.board, self)
+            figures.TheKing(3, 7, self.board, self)
+            figures.TheQueen(4, 7, self.board, self)
+            figures.Bishop(5, 7, self.board, self)
+            figures.Knight(6, 7, self.board, self)
+            figures.Rook(7, 7, self.board, self)
+            for i in range(8):
+                figures.Pawn(i, 6, self.board, self)
+
+    def available_moves(self):
+        moves = []
+        for figure in self.figures:
+            for x in range(8):
+                for y in range(8):
+                    if figure.try_move([x,y]) is True:
+                        moves.append([figure,[x,y]])
+        return moves
+
+    def move(self):
+        moves = self.available_moves()
+        return 0
 
 
 class ChessBoard:
@@ -184,7 +229,6 @@ class ChessBoard:
             self.highlight(x, y)
         for figure in self.grid:
             figure.draw()
-
         pygame.display.flip()
 
     def check_boundaries(self, x):
