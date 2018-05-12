@@ -164,8 +164,18 @@ class AI(Player):
 
     def move(self):
         moves = self.available_moves()
-        random_move = random.randrange(len(moves))
-        moves[random_move][0].move(moves[random_move][1])
+        enemy_figures = game.get_enemy_figures(self.color)
+        best_move = -1
+        best_value = -999
+        for i in range(len(moves)):
+            figure = self.get_figure(moves[i][1], enemy_figures)
+            if figure is False:
+                continue
+            if figure.score > best_value:
+                best_value = figure.score
+                best_move = i
+
+        moves[best_move][0].move(moves[best_move][1])
         return 0
 
 
