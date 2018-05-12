@@ -1,4 +1,4 @@
-import pygame, sys, os
+import pygame, sys, os, random
 import figures
 
 
@@ -164,6 +164,8 @@ class AI(Player):
 
     def move(self):
         moves = self.available_moves()
+        random_move = random.randrange(len(moves))
+        moves[random_move][0].move(moves[random_move][1])
         return 0
 
 
