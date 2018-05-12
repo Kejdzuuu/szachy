@@ -115,9 +115,53 @@ class TheQueen(ChessPiece):
     def is_legal(self, coordinate):
         delta_x = coordinate[0] - self.x
         delta_y = coordinate[1] - self.y
-        if (not (abs(delta_x) == 0 and abs(delta_y) == 0)):
-            if (abs(delta_x) == abs(delta_y)) or (abs(delta_x) == 0 and abs(delta_y) > 0) or (abs(delta_y) == 0 and abs(delta_x) > 0):
+        
+        if not (delta_x == 0 and delta_y == 0):
+            if bool(delta_x) ^ bool(delta_y):
+                if bool(delta_x):
+                    delta = delta_x
+                    index = 0
+                elif bool(delta_y):
+                    delta = delta_y
+                    index = 1
+
+                if(delta > 0):
+                    sign = -1
+                else:
+                    sign = 1
+
+                for i in range(1, abs(delta)):
+                    coordinate[index] += sign * 1;
+
+                    if (self.is_occupied_by_enemy(coordinate) or self.is_occupied_by_friendly_figure(coordinate)):
+                        coordinate[index] -= sign * i
+                        return False
+                coordinate[index] -= sign * abs(delta) - sign
                 return True
+
+            elif abs(delta_x) > 0 and abs(delta_x) == abs(delta_y):
+                if(delta_x > 0):
+                    signx = -1
+                else:
+                    signx = 1
+
+                if(delta_y > 0):
+                    signy = -1
+                else: 
+                    signy = 1
+
+                for i in range(1, abs(delta_x)):
+                    coordinate[0] += signx * 1
+                    coordinate[1] += signy * 1
+
+                    if (self.is_occupied_by_enemy(coordinate) or self.is_occupied_by_friendly_figure(coordinate)):
+                        coordinate[0] -= signx * i
+                        coordinate[1] -= signy * i
+                        return False
+                coordinate[0] -= signx * abs(delta_x) - signx
+                coordinate[1] -= signy * abs(delta_y) - signy
+                return True
+
         return False
 
     def draw(self):
@@ -135,8 +179,29 @@ class Rook(ChessPiece):
     def is_legal(self, coordinate):
         delta_x = coordinate[0] - self.x
         delta_y = coordinate[1] - self.y
+        
         if bool(delta_x) ^ bool(delta_y):
-                return True
+            if bool(delta_x):
+                delta = delta_x
+                index = 0
+            elif bool(delta_y):
+                delta = delta_y
+                index = 1
+
+            if(delta > 0):
+                sign = -1
+            else:
+                sign = 1
+
+            for i in range(1, abs(delta)):
+                coordinate[index] += sign * 1;
+
+                if (self.is_occupied_by_enemy(coordinate) or self.is_occupied_by_friendly_figure(coordinate)):
+                    coordinate[index] -= sign * i
+                    return False
+            coordinate[index] -= sign * abs(delta) - sign
+            return True
+
         return False
 
     def draw(self):
@@ -154,9 +219,30 @@ class Bishop(ChessPiece):
     def is_legal(self, coordinate):
         delta_x = coordinate[0] - self.x
         delta_y = coordinate[1] - self.y
-        if abs(delta_x) > 0:
-            if (abs(delta_x) == abs(delta_y)):
-                return True
+        
+        if abs(delta_x) > 0 and abs(delta_x) == abs(delta_y):
+            if(delta_x > 0):
+                signx = -1
+            else:
+                signx = 1
+
+            if(delta_y > 0):
+                signy = -1
+            else: 
+                signy = 1
+
+            for i in range(1, abs(delta_x)):
+                coordinate[0] += signx * 1
+                coordinate[1] += signy * 1
+
+                if (self.is_occupied_by_enemy(coordinate) or self.is_occupied_by_friendly_figure(coordinate)):
+                    coordinate[0] -= signx * i
+                    coordinate[1] -= signy * i
+                    return False
+            coordinate[0] -= signx * abs(delta_x) - signx
+            coordinate[1] -= signy * abs(delta_y) - signy
+            return True
+
         return False
 
     def draw(self):
