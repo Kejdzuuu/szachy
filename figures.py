@@ -263,7 +263,7 @@ class Pawn(ChessPiece):
 
         if self.color == "white":
             if delta_x == 0:
-                if delta_y == 1 or (delta_y == 2 and self.first_move):
+                if (delta_y == 1 or (delta_y == 2 and self.first_move)) and self.is_occupied_by_enemy(coordinate) is False:
                     self.first_move = 0
                     return True
             if delta_y == 1 and abs(delta_x) == 1:
@@ -272,7 +272,7 @@ class Pawn(ChessPiece):
                     return True
         else:
             if delta_x == 0:
-                if delta_y == -1 or (delta_y == -2 and self.first_move):
+                if (delta_y == -1 or (delta_y == -2 and self.first_move)) and self.is_occupied_by_enemy(coordinate) is False:
                     self.first_move = 0
                     return True
             if delta_y == -1 and abs(delta_x) == 1:
