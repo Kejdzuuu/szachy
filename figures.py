@@ -52,6 +52,7 @@ class ChessPiece:
 
     def move(self, coordinate):
         if self.try_move(coordinate):
+            last_coordinates = [self.x, self.y]
             self.x = coordinate[0]
             self.y = coordinate[1]
             if self.is_occupied_by_enemy(coordinate) is True:
@@ -59,9 +60,14 @@ class ChessPiece:
                 figure = self.player.get_figure(coordinate, enemy_figures)
                 enemy = self.player.game.get_enemy(self.player.color)
                 enemy.remove_figure(figure)
+                self.player.moves_made.append([self, last_coordinates, figure, [figure.x, figure.y]])
+            else:
+                self.player.moves_made.append([self, last_coordinates, 0, 0])
             return True
         else:
             return False
+
+
 
     
 class Knight(ChessPiece):

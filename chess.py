@@ -1,4 +1,4 @@
-import pygame, sys, os, random
+import pygame, sys, os, time, random
 import figures
 
 
@@ -45,6 +45,7 @@ class Player:
         self.board = board
         self.is_figure_selected = False
         self.selected_figure = 0
+        self.moves_made = []
         if color is "white":
             self.active_tile = [0, 0]
             figures.Rook(0, 0, self.board, self)
@@ -81,6 +82,15 @@ class Player:
         self.board.grid.remove(figure)
         if type(figure) is figures.TheKing:
             sys.exit()
+
+    def available_moves(self):
+        moves = []
+        for figure in self.figures:
+            for x in range(8):
+                for y in range(8):
+                    if figure.try_move([x,y]) is True:
+                        moves.append([figure,[x,y]])
+        return moves
 
     def move(self):
         turn_finished = False
@@ -120,6 +130,10 @@ class Player:
 
             self.board.update(self.active_tile[0], self.active_tile[1], self.is_figure_selected)
 
+    def undo_move(self):
+        self.moves_made[-1][0].x = self.moves_made[-1][1][0]
+        self.moves_made[-1][0].y = self.moves_made[-1][1][1]
+        self.moves_made.pop(-1)
 
 class AI(Player):
 
@@ -130,6 +144,7 @@ class AI(Player):
         self.board = board
         self.is_figure_selected = False
         self.active_tile = [0, 7]
+        self.moves_made = []
         if color is "white":
             figures.Rook(0, 0, self.board, self)
             figures.Knight(1, 0, self.board, self)
@@ -153,14 +168,6 @@ class AI(Player):
             for i in range(8):
                 figures.Pawn(i, 6, self.board, self)
 
-    def available_moves(self):
-        moves = []
-        for figure in self.figures:
-            for x in range(8):
-                for y in range(8):
-                    if figure.try_move([x,y]) is True:
-                        moves.append([figure,[x,y]])
-        return moves
 
     def move(self):
         moves = self.available_moves()
