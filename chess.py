@@ -178,6 +178,44 @@ class AI(Player):
         moves[best_move][0].move(moves[best_move][1])
         return 0
 
+    def minmax(self, depth):
+        points = 0
+        max_points_minmax = -999
+        best_move_minmax = -1
+        path = []
+
+        for j in range(1, 2 * depth):
+            if(j % 2):
+                color = "black"
+                moves = self.available_moves()
+            else:
+                color = "white"
+                moves = self.game.get_enemy().available_moves()
+
+            enemy_figures = game.get_enemy_figures(color)
+            best_move = -1
+            best_value = -999
+            for i in range(len(moves)):
+                if(j % 2):
+                    figure = self.get_figure(moves[i][1], enemy_figures)
+                else:
+                    figure = self.game.get_enemy().get_figure(moves[i][0], enemy_figures)
+
+                if figure is False:
+                    continue
+                if figure.score > best_value:
+                    best_value = figure.score
+                    best_move = i
+
+            if(j % 2):       
+                points += best_value
+            else:
+                points -= best_value
+
+        return 0
+
+
+
 
 class ChessBoard:
 
