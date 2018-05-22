@@ -11,7 +11,7 @@ class Game:
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        self.player1 = Player(self.board, "white", self)
+        self.player1 = AI(self.board, "white", self)
         self.player2 = AI(self.board, "black", self)
         self.queue = [self.player1, self.player2]
         self.counter = 0
@@ -169,6 +169,7 @@ class Player:
         best_value = -9999
         this_value = 0
         moves = self.available_moves()
+        random.shuffle(moves)
         enemy = self.game.get_enemy(self.color)
         enemy_figures = game.get_enemy_figures(self.color)
         if len(moves) == 0:
@@ -178,10 +179,15 @@ class Player:
             figure = self.get_figure(moves[i][1], enemy_figures)
             if figure is False:
                 this_value = 0
+                if this_figure.last_position == moves[i][1]:
+                    if depth % 2 == 0:
+                        this_value -= 100
             else:
                 this_value = figure.score
                 if type(figure) is figures.TheKing: ## nowe
                     return [i, this_value]
+            if this_value < best_value:
+                break
             this_figure.move(moves[i][1])
             if depth > 0:
                 this_value -= enemy.minimax(depth - 1)[1]
@@ -313,7 +319,10 @@ game = Game()
 move = [0,0]
 
 while game.finished is False:
+    start = time.time()
     game.take_turn()
+    while (time.time() - start) < 1:
+        time.sleep(0.1)
 
 
 time.sleep(1)
@@ -333,4 +342,9 @@ game.screen.blit(label, (block_left + 50, block_top + 30))
 pygame.display.flip()
 pygame.display.update()
 time.sleep(2)
-sys.exit()
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            sys.exit()

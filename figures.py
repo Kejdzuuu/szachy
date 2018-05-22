@@ -17,6 +17,7 @@ class ChessPiece:
         self.image = self.load_image()
         self.board.grid.append(self)
         self.player.figures.append(self)
+        self.last_position = []
 
     def load_image(self):
         srcname = self.color + self.srcname
@@ -54,6 +55,7 @@ class ChessPiece:
         if self.try_move(coordinate):
             self.moves_made += 1
             last_coordinates = [self.x, self.y]
+            self.last_position = last_coordinates
             self.x = coordinate[0]
             self.y = coordinate[1]
             if self.is_occupied_by_enemy(coordinate) is True:
