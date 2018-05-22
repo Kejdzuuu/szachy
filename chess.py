@@ -16,6 +16,7 @@ class Game:
         self.queue = [self.player1, self.player2]
         self.counter = 0
         self.active_player = self.player1
+        self.finished = False
 
     def take_turn(self):
         self.board.update(self.queue[self.counter].active_tile[0], self.queue[self.counter].active_tile[1], self.active_player.is_figure_selected)
@@ -83,7 +84,9 @@ class Player:
         self.figures.remove(figure)
         self.board.grid.remove(figure)
         if type(figure) is figures.TheKing:
-            sys.exit()
+            self.game.finished = True
+            self.board.update(0,0,False)
+
 
     def available_moves(self):
         moves = []
@@ -214,14 +217,14 @@ class AI(Player):
         else:
             figures.Rook(0, 7, self.board, self)
             figures.Knight(1, 7, self.board, self)
-            # figures.Bishop(2, 7, self.board, self)
-            # figures.TheKing(3, 7, self.board, self)
-            # figures.TheQueen(4, 7, self.board, self)
-            # figures.Bishop(5, 7, self.board, self)
-            # figures.Knight(6, 7, self.board, self)
-            # figures.Rook(7, 7, self.board, self)
-            # for i in range(8):
-            #     figures.Pawn(i, 6, self.board, self)
+            figures.Bishop(2, 7, self.board, self)
+            figures.TheKing(3, 7, self.board, self)
+            figures.TheQueen(4, 7, self.board, self)
+            figures.Bishop(5, 7, self.board, self)
+            figures.Knight(6, 7, self.board, self)
+            figures.Rook(7, 7, self.board, self)
+            for i in range(8):
+                figures.Pawn(i, 6, self.board, self)
 
     def move(self):
         moves = self.available_moves()
@@ -300,6 +303,7 @@ class ChessBoard:
             return False
         return True
 
+
 cwd = os.getcwd()
 if cwd[-6:] == "szachy":
     cwd = cwd[0:-7]
@@ -308,8 +312,33 @@ if cwd[-6:] == "szachy":
 game = Game()
 move = [0,0]
 
-while True:
+while game.finished is False:
     game.take_turn()
 
 
+time.sleep(1)
+# pygame.init()
 
+
+
+
+# DISPLAY=pygame.display.set_mode((500,400),0,32)
+
+white = (255, 255, 255)
+black = (0, 0, 0)
+
+# DISPLAY.fill(WHITE)
+block_width = 300
+block_left = (game.width - block_width) / 2
+block_height = 100
+block_top = (game.height - block_height) / 2
+
+pygame.draw.rect(game.screen, black, (block_left - 2, block_top - 2, block_width + 4, block_height + 4))
+pygame.draw.rect(game.screen, white, (block_left, block_top, block_width, block_height))
+myfont = pygame.font.SysFont("monospace", 30)
+label = myfont.render("Szach!", 1, (0, 0, 0))
+game.screen.blit(label, (block_left + 100, block_top + 30))
+pygame.display.flip()
+pygame.display.update()
+time.sleep(2)
+sys.exit()
