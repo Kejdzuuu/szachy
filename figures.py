@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, time
 
 
 class ChessPiece:
@@ -12,7 +12,7 @@ class ChessPiece:
         self.board = board
         self.player = player
         self.color = self.player.color
-        self.first_move = 1
+        self.moves_made = 0
         self.srcname = ""
         self.image = self.load_image()
         self.board.grid.append(self)
@@ -52,6 +52,7 @@ class ChessPiece:
 
     def move(self, coordinate):
         if self.try_move(coordinate):
+            self.moves_made += 1
             last_coordinates = [self.x, self.y]
             self.x = coordinate[0]
             self.y = coordinate[1]
@@ -59,8 +60,8 @@ class ChessPiece:
                 enemy_figures = self.player.game.get_enemy_figures(self.player.color)
                 figure = self.player.get_figure(coordinate, enemy_figures)
                 enemy = self.player.game.get_enemy(self.player.color)
-                enemy.remove_figure(figure)
                 self.player.moves_made.append([self, last_coordinates, figure, [figure.x, figure.y]])
+                enemy.remove_figure(figure)
             else:
                 self.player.moves_made.append([self, last_coordinates, 0, 0])
             return True
@@ -269,21 +270,17 @@ class Pawn(ChessPiece):
 
         if self.color == "white":
             if delta_x == 0:
-                if (delta_y == 1 or (delta_y == 2 and self.first_move)) and self.is_occupied_by_enemy(coordinate) is False:
-                    self.first_move = 0
+                if (delta_y == 1 or (delta_y == 2 and self.moves_made == 0)) and self.is_occupied_by_enemy(coordinate) is False:
                     return True
             if delta_y == 1 and abs(delta_x) == 1:
                 if self.is_occupied_by_enemy(coordinate) is not False:
-                    self.first_move = 0
                     return True
         else:
             if delta_x == 0:
-                if (delta_y == -1 or (delta_y == -2 and self.first_move)) and self.is_occupied_by_enemy(coordinate) is False:
-                    self.first_move = 0
+                if (delta_y == -1 or (delta_y == -2 and self.moves_made == 0)) and self.is_occupied_by_enemy(coordinate) is False:
                     return True
             if delta_y == -1 and abs(delta_x) == 1:
                 if self.is_occupied_by_enemy(coordinate) is not False:
-                    self.first_move = 0
                     return True
         return False
 

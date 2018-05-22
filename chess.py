@@ -11,11 +11,11 @@ class Game:
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        player1 = Player(self.board, "white", self)
-        player2 = AI(self.board, "black", self)
-        self.queue = [player1, player2]
+        self.player1 = Player(self.board, "white", self)
+        self.player2 = AI(self.board, "black", self)
+        self.queue = [self.player1, self.player2]
         self.counter = 0
-        self.active_player = player1
+        self.active_player = self.player1
 
     def take_turn(self):
         self.board.update(self.queue[self.counter].active_tile[0], self.queue[self.counter].active_tile[1], self.active_player.is_figure_selected)
@@ -42,6 +42,7 @@ class Player:
         self.game = game
         self.color = color
         self.figures = []
+        self.lost_figures = []
         self.board = board
         self.is_figure_selected = False
         self.selected_figure = 0
@@ -56,8 +57,8 @@ class Player:
             figures.Bishop(5, 0, self.board, self)
             figures.Knight(6, 0, self.board, self)
             figures.Rook(7, 0, self.board, self)
-            # for i in range(8):
-            #     figures.Pawn(i, 1, self.board, self)
+            for i in range(8):
+                figures.Pawn(i, 1, self.board, self)
         else:
             self.active_tile = [0, 7]
             figures.Rook(0, 7, self.board, self)
@@ -78,6 +79,7 @@ class Player:
         return False
 
     def remove_figure(self, figure):
+        self.lost_figures.append(figure)
         self.figures.remove(figure)
         self.board.grid.remove(figure)
         if type(figure) is figures.TheKing:
@@ -86,8 +88,8 @@ class Player:
     def available_moves(self):
         moves = []
         for figure in self.figures:
-            for x in range(8):
-                for y in range(8):
+            for x in range(self.board.boardSize):
+                for y in range(self.board.boardSize):
                     if figure.try_move([x, y]) is True:
                         moves.append([figure, [x, y]])
         return moves
@@ -124,16 +126,19 @@ class Player:
                                 turn_finished = True
                             else:
                                 self.is_figure_selected = False
-
+                    if event.key == pygame.K_x:
+                        self.undo_move()
                     if event.key == pygame.K_ESCAPE:
                         sys.exit()
 
             self.board.update(self.active_tile[0], self.active_tile[1], self.is_figure_selected)
 
     def undo_move(self):
-        self.moves_made[-1][0].x = self.moves_made[-1][1][0]
-        self.moves_made[-1][0].y = self.moves_made[-1][1][1]
-        if type(self.moves_made[-1][0]) is figures.Pawn:
+        figure = self.moves_made[-1][0]
+        figure.x = self.moves_made[-1][1][0]
+        figure.y = self.moves_made[-1][1][1]
+        figure.moves_made -= 1
+        if type(figure) is figures.Pawn:
             if self.color is 'white':
                 if self.moves_made[-1][1][1] == 1:
                     self.moves_made[-1][0].first_move = 1
@@ -142,30 +147,19 @@ class Player:
                     self.moves_made[-1][0].first_move = 1
         if self.moves_made[-1][2] is not 0:
             self.insert_figure(self.moves_made[-1][2], self.moves_made[-1][3])
+            #print(str(type(self)) + " " +str(type(self.moves_made[-1][2])) + "   " + str(self.moves_made[-1][3][0]) + " " + str(self.moves_made[-1][3][1]))
         self.moves_made.pop(-1)
 
     def insert_figure(self, figure, coords):
         x = coords[0]
         y = coords[1]
         enemy = self.game.get_enemy(self.color)
-        if type(figure) is figures.Rook:
-            figures.Rook(x, y, enemy.board, enemy)
-        if type(figure) is figures.Knight:
-            figures.Knight(x, y, enemy.board, enemy)
-        if type(figure) is figures.Bishop:
-            figures.Bishop(x, y, enemy.board, enemy)
-        if type(figure) is figures.TheKing:
-            figures.TheKing(x, y, enemy.board, enemy)
-        if type(figure) is figures.TheQueen:
-            figures.TheQueen(x, y, enemy.board, enemy)
-        if type(figure) is figures.Pawn:
-            fig = figures.Pawn(x, y, enemy.board, enemy)
-            if enemy.color is 'white':
-                if y == 1:
-                    fig.first_move = 1
-            else:
-                if y == 6:
-                    fig.first_move = 1
+        for fig in enemy.lost_figures:
+            if fig is figure:
+                enemy.figures.append(fig)
+                enemy.lost_figures.remove(fig)
+                self.board.grid.append(fig)
+                return
 
     def minimax(self, depth):
         best_move = -1
@@ -174,14 +168,18 @@ class Player:
         moves = self.available_moves()
         enemy = self.game.get_enemy(self.color)
         enemy_figures = game.get_enemy_figures(self.color)
+        if len(moves) == 0:
+            return [0, 0]
         for i in range(len(moves)):
+            this_figure = moves[i][0]
             figure = self.get_figure(moves[i][1], enemy_figures)
-            if moves[i][0].move(moves[i][1]) is False:
-                print("CC")
             if figure is False:
                 this_value = 0
             else:
                 this_value = figure.score
+                if type(figure) is figures.TheKing: ## nowe
+                    return [i, this_value]
+            this_figure.move(moves[i][1])
             if depth > 0:
                 this_value -= enemy.minimax(depth - 1)[1]
             self.undo_move()
@@ -197,6 +195,7 @@ class AI(Player):
         self.game = game
         self.color = color
         self.figures = []
+        self.lost_figures = []
         self.board = board
         self.is_figure_selected = False
         self.active_tile = [0, 7]
@@ -215,32 +214,19 @@ class AI(Player):
         else:
             figures.Rook(0, 7, self.board, self)
             figures.Knight(1, 7, self.board, self)
-            figures.Bishop(2, 7, self.board, self)
-            figures.TheKing(3, 7, self.board, self)
-            figures.TheQueen(4, 7, self.board, self)
-            figures.Bishop(5, 7, self.board, self)
-            figures.Knight(6, 7, self.board, self)
-            figures.Rook(7, 7, self.board, self)
+            # figures.Bishop(2, 7, self.board, self)
+            # figures.TheKing(3, 7, self.board, self)
+            # figures.TheQueen(4, 7, self.board, self)
+            # figures.Bishop(5, 7, self.board, self)
+            # figures.Knight(6, 7, self.board, self)
+            # figures.Rook(7, 7, self.board, self)
             # for i in range(8):
             #     figures.Pawn(i, 6, self.board, self)
 
     def move(self):
         moves = self.available_moves()
-        # enemy_figures = game.get_enemy_figures(self.color)
-        # best_move = -1
-        # best_value = -999
-        # for i in range(len(moves)):
-        #     figure = self.get_figure(moves[i][1], enemy_figures)
-        #     if figure is False:
-        #         continue
-        #     if figure.score > best_value:
-        #         best_value = figure.score
-        #         best_move = i
-        best_move = self.minimax(1)[0]
-        moves[best_move][0].move(moves[best_move][1])
-        return 0
-
-
+        best_move = self.minimax(2)
+        moves[best_move[0]][0].move(moves[best_move[0]][1])
 
 
 class ChessBoard:
