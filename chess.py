@@ -317,17 +317,9 @@ while game.finished is False:
 
 
 time.sleep(1)
-# pygame.init()
-
-
-
-
-# DISPLAY=pygame.display.set_mode((500,400),0,32)
 
 white = (255, 255, 255)
 black = (0, 0, 0)
-
-# DISPLAY.fill(WHITE)
 block_width = 300
 block_left = (game.width - block_width) / 2
 block_height = 100
@@ -336,8 +328,8 @@ block_top = (game.height - block_height) / 2
 pygame.draw.rect(game.screen, black, (block_left - 2, block_top - 2, block_width + 4, block_height + 4))
 pygame.draw.rect(game.screen, white, (block_left, block_top, block_width, block_height))
 myfont = pygame.font.SysFont("monospace", 30)
-label = myfont.render("Szach!", 1, (0, 0, 0))
-game.screen.blit(label, (block_left + 100, block_top + 30))
+label = myfont.render("Szach i mat!", 1, (0, 0, 0))
+game.screen.blit(label, (block_left + 50, block_top + 30))
 pygame.display.flip()
 pygame.display.update()
 time.sleep(2)
