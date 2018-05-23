@@ -76,6 +76,8 @@ class ChessPiece:
 class Knight(ChessPiece):
     def load_image(self):
         self.score = 30
+        if self.color is "black":
+            self.score *= -1
         self.srcname = 'knight.png'
         return super().load_image()
 
@@ -99,6 +101,8 @@ class Knight(ChessPiece):
 class TheKing(ChessPiece):
     def load_image(self):
         self.score = 900
+        if self.color is "black":
+            self.score *= -1
         self.srcname = 'king.png'
         return super().load_image()
 
@@ -118,6 +122,8 @@ class TheKing(ChessPiece):
 class TheQueen(ChessPiece):
     def load_image(self):
         self.score = 90
+        if self.color is "black":
+            self.score *= -1
         self.srcname = 'queen.png'
         return super().load_image()
 
@@ -182,6 +188,8 @@ class TheQueen(ChessPiece):
 class Rook(ChessPiece):
     def load_image(self):
         self.score = 50
+        if self.color is "black":
+            self.score *= -1
         self.srcname = 'rook.png'
         return super().load_image()
 
@@ -222,6 +230,8 @@ class Rook(ChessPiece):
 class Bishop(ChessPiece):
     def load_image(self):
         self.score = 30
+        if self.color is "black":
+            self.score *= -1
         self.srcname = 'bishop.png'
         return super().load_image()
 
@@ -263,6 +273,8 @@ class Bishop(ChessPiece):
 class Pawn(ChessPiece):
     def load_image(self):
         self.score = 10
+        if self.color is "black":
+            self.score *= -1
         self.srcname = 'pawn.png'
         return super().load_image()
 

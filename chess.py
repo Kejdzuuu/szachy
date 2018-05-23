@@ -11,7 +11,7 @@ class Game:
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        self.player1 = AI(self.board, "white", self)
+        self.player1 = Player(self.board, "white", self)
         self.player2 = AI(self.board, "black", self)
         self.queue = [self.player1, self.player2]
         self.counter = 0
@@ -85,7 +85,7 @@ class Player:
         self.board.grid.remove(figure)
         if type(figure) is figures.TheKing:
             self.game.finished = True
-            self.board.update(0,0,False)
+            #self.board.update(0,0,False)
 
 
     def available_moves(self):
@@ -162,7 +162,17 @@ class Player:
                 enemy.figures.append(fig)
                 enemy.lost_figures.remove(fig)
                 self.board.grid.append(fig)
+                self.game.finished = False
                 return
+
+    def evaluate_board(self):
+        evaluation = 0
+        enemy_figures = self.game.get_enemy_figures(self.color)
+        for figure in self.figures:
+            evaluation += figure.score
+        for figure in enemy_figures:
+            evaluation += figure.score
+        return -200
 
     def minimax(self, depth):
         best_move = -1
@@ -190,12 +200,55 @@ class Player:
                 break
             this_figure.move(moves[i][1])
             if depth > 0:
-                this_value -= enemy.minimax(depth - 1)[1]
+                this_value = enemy.minimax(depth - 1)[1]
             self.undo_move()
             if this_value > best_value:
                 best_value = this_value
                 best_move = i
         return [best_move, best_value]
+
+    def minimax_root(self, depth, is_maximising_player):
+        moves = self.available_moves()
+        best_value = -9999
+        best_move = -1
+
+        for i in range(len(moves)):
+            this_figure = moves[i][0]
+            this_figure.move(moves[i][1])
+            value = self.minimax2(depth - 1, -10000, 10000, not is_maximising_player)
+            self.undo_move()
+            if value >= best_value:
+                best_value = value
+                best_move = i
+        return best_move
+
+    def minimax2(self, depth, alpha, beta, is_maximising_player):
+        if depth is 0:
+            return self.evaluate_board()
+
+        moves = self.available_moves()
+        if is_maximising_player is True:
+            best_value = -9999
+            for i in range(len(moves)):
+                this_figure = moves[i][0]
+                this_figure.move(moves[i][1])
+                best_value = max(best_value, self.minimax2(depth - 1, alpha, beta, not is_maximising_player))
+                self.undo_move()
+                alpha = max(alpha, best_value)
+                if beta <= alpha:
+                    return best_value
+            return best_value
+        else:
+            best_value = 9999
+            for i in range(len(moves)):
+                this_figure = moves[i][0]
+                this_figure.move(moves[i][1])
+                best_value = min(best_value, self.minimax2(depth - 1, alpha, beta, not is_maximising_player))
+                self.undo_move()
+                beta = min(beta, best_value)
+                if beta <= alpha:
+                    return best_value
+            return best_value
 
 
 class AI(Player):
@@ -236,6 +289,8 @@ class AI(Player):
         moves = self.available_moves()
         best_move = self.minimax(2)
         moves[best_move[0]][0].move(moves[best_move[0]][1])
+        # best_move = self.minimax_root(4, True)
+        # moves[best_move][0].move(moves[best_move][1])
 
 
 class ChessBoard:
@@ -324,7 +379,7 @@ while game.finished is False:
     while (time.time() - start) < 1:
         time.sleep(0.1)
 
-
+game.board.update(0, 0, False)
 time.sleep(1)
 
 white = (255, 255, 255)
