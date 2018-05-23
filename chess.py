@@ -196,15 +196,15 @@ class Player:
             figure = self.get_figure(moves[i][1], enemy_figures)
             if figure is False:
                 this_value = 0
-                if this_figure.last_position == moves[i][1]:
-                    if depth % 2 == 0:
-                        this_value -= 100
+                # if this_figure.last_position == moves[i][1]:
+                #     if depth % 2 == 0:
+                #         this_value -= 100
             else:
                 this_value = abs(figure.score)
-                if type(figure) is figures.TheKing:
-                    return [i, this_value]
-            if this_value < best_value:
-                break
+                # if type(figure) is figures.TheKing:
+                #     return [i, this_value]
+            # if this_value < best_value:
+            #     break
             this_figure.move(moves[i][1])
             if depth > 0:
                 this_value = -enemy.minimax(depth - 1)[1]
@@ -294,10 +294,10 @@ class AI(Player):
 
     def move(self):
         moves = self.available_moves()
-        # best_move = self.minimax(2)
-        # moves[best_move[0]][0].move(moves[best_move[0]][1])
-        best_move = self.minimax_root(4, True)
-        moves[best_move][0].move(moves[best_move][1])
+        best_move = self.minimax(2)
+        moves[best_move[0]][0].move(moves[best_move[0]][1])
+        # best_move = self.minimax_root(3, True)
+        # moves[best_move][0].move(moves[best_move][1])
 
 
 class ChessBoard:
