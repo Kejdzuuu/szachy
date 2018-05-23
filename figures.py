@@ -18,6 +18,7 @@ class ChessPiece:
         self.board.grid.append(self)
         self.player.figures.append(self)
         self.last_position = []
+        self.evaluation_board = []
 
     def load_image(self):
         srcname = self.color + self.srcname
@@ -71,13 +72,23 @@ class ChessPiece:
             return False
 
 
-
-    
 class Knight(ChessPiece):
-    def load_image(self):
+    def __init__(self, x, y, board, player):
+        super().__init__(x, y, board, player)
+        self.evaluation_board = [
+            [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+            [-4.0, -2.0, 0.0, 0.0, 0.0, 0.0, -2.0, -4.0],
+            [-3.0, 0.0, 1.0, 1.5, 1.5, 1.0, 0.0, -3.0],
+            [-3.0, 0.5, 1.5, 2.0, 2.0, 1.5, 0.5, -3.0],
+            [-3.0, 0.0, 1.5, 2.0, 2.0, 1.5, 0.0, -3.0],
+            [-3.0, 0.5, 1.0, 1.5, 1.5, 1.0, 0.5, -3.0],
+            [-4.0, -2.0, 0.0, 0.5, 0.5, 0.0, -2.0, -4.0],
+            [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]]
         self.score = 30
         if self.color is "black":
             self.score *= -1
+
+    def load_image(self):
         self.srcname = 'knight.png'
         return super().load_image()
 
@@ -99,10 +110,23 @@ class Knight(ChessPiece):
 
 
 class TheKing(ChessPiece):
-    def load_image(self):
+    def __init__(self, x, y, board, player):
+        super().__init__(x, y, board, player)
+        self.evaluation_board = [
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+            [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+            [2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0],
+            [2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0]]
         self.score = 900
         if self.color is "black":
             self.score *= -1
+            self.evaluation_board.reverse()
+
+    def load_image(self):
         self.srcname = 'king.png'
         return super().load_image()
 
@@ -120,10 +144,22 @@ class TheKing(ChessPiece):
 
 
 class TheQueen(ChessPiece):
-    def load_image(self):
+    def __init__(self, x, y, board, player):
+        super().__init__(x, y, board, player)
+        self.evaluation_board = [
+            [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+            [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+            [-1.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+            [-0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+            [0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+            [-1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+            [-1.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, -1.0],
+            [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]]
         self.score = 90
         if self.color is "black":
             self.score *= -1
+
+    def load_image(self):
         self.srcname = 'queen.png'
         return super().load_image()
 
@@ -186,10 +222,23 @@ class TheQueen(ChessPiece):
 
 
 class Rook(ChessPiece):
-    def load_image(self):
+    def __init__(self, x, y, board, player):
+        super().__init__(x, y, board, player)
+        self.evaluation_board = [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0]]
         self.score = 50
         if self.color is "black":
             self.score *= -1
+            self.evaluation_board.reverse()
+
+    def load_image(self):
         self.srcname = 'rook.png'
         return super().load_image()
 
@@ -228,10 +277,23 @@ class Rook(ChessPiece):
 
 
 class Bishop(ChessPiece):
-    def load_image(self):
+    def __init__(self, x, y, board, player):
+        super().__init__(x, y, board, player)
+        self.evaluation_board = [
+            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+            [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+            [-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0, -1.0],
+            [-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5, -1.0],
+            [-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, -1.0],
+            [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0],
+            [-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, -1.0],
+            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]]
         self.score = 30
         if self.color is "black":
             self.score *= -1
+            self.evaluation_board.reverse()
+
+    def load_image(self):
         self.srcname = 'bishop.png'
         return super().load_image()
 
@@ -271,10 +333,23 @@ class Bishop(ChessPiece):
 
 
 class Pawn(ChessPiece):
-    def load_image(self):
+    def __init__(self, x, y, board, player):
+        super().__init__(x, y, board, player)
+        self.evaluation_board = [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
+            [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
+            [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
+            [0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0],
+            [0.5, -0.5, -1.0, 0.0, 0.0, -1.0, -0.5, 0.5],
+            [0.5, 1.0, 1.0, -2.0, -2.0, 1.0, 1.0, 0.5],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
         self.score = 10
         if self.color is "black":
             self.score *= -1
+            self.evaluation_board.reverse()
+
+    def load_image(self):
         self.srcname = 'pawn.png'
         return super().load_image()
 

@@ -11,7 +11,7 @@ class Game:
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        self.player1 = Player(self.board, "white", self)
+        self.player1 = AI(self.board, "white", self)
         self.player2 = AI(self.board, "black", self)
         self.queue = [self.player1, self.player2]
         self.counter = 0
@@ -85,7 +85,6 @@ class Player:
         self.board.grid.remove(figure)
         if type(figure) is figures.TheKing:
             self.game.finished = True
-            #self.board.update(0,0,False)
 
 
     def available_moves(self):
@@ -150,7 +149,6 @@ class Player:
                     self.moves_made[-1][0].first_move = 1
         if self.moves_made[-1][2] is not 0:
             self.insert_figure(self.moves_made[-1][2], self.moves_made[-1][3])
-            #print(str(type(self)) + " " +str(type(self.moves_made[-1][2])) + "   " + str(self.moves_made[-1][3][0]) + " " + str(self.moves_made[-1][3][1]))
         self.moves_made.pop(-1)
 
     def insert_figure(self, figure, coords):
@@ -167,12 +165,21 @@ class Player:
 
     def evaluate_board(self):
         evaluation = 0
-        enemy_figures = self.game.get_enemy_figures(self.color)
+        enemy_figures = game.get_enemy_figures(self.color)
+        eval_board = 0
         for figure in self.figures:
-            evaluation += figure.score
+            eval_board = figure.evaluation_board[figure.y][figure.x]
+            if figure.score > 0:
+                evaluation += figure.score + eval_board
+            else:
+                evaluation += figure.score - eval_board
         for figure in enemy_figures:
-            evaluation += figure.score
-        return -200
+            eval_board = figure.evaluation_board[figure.y][figure.x]
+            if figure.score > 0:
+                evaluation += figure.score + eval_board
+            else:
+                evaluation += figure.score - eval_board
+        return evaluation
 
     def minimax(self, depth):
         best_move = -1
@@ -193,14 +200,14 @@ class Player:
                     if depth % 2 == 0:
                         this_value -= 100
             else:
-                this_value = figure.score
-                if type(figure) is figures.TheKing: ## nowe
+                this_value = abs(figure.score)
+                if type(figure) is figures.TheKing:
                     return [i, this_value]
             if this_value < best_value:
                 break
             this_figure.move(moves[i][1])
             if depth > 0:
-                this_value = enemy.minimax(depth - 1)[1]
+                this_value = -enemy.minimax(depth - 1)[1]
             self.undo_move()
             if this_value > best_value:
                 best_value = this_value
@@ -215,14 +222,14 @@ class Player:
         for i in range(len(moves)):
             this_figure = moves[i][0]
             this_figure.move(moves[i][1])
-            value = self.minimax2(depth - 1, -10000, 10000, not is_maximising_player)
+            value = self.minimax_with_alpha_beta(depth - 1, -10000, 10000, not is_maximising_player)
             self.undo_move()
             if value >= best_value:
                 best_value = value
                 best_move = i
         return best_move
 
-    def minimax2(self, depth, alpha, beta, is_maximising_player):
+    def minimax_with_alpha_beta(self, depth, alpha, beta, is_maximising_player):
         if depth is 0:
             return self.evaluate_board()
 
@@ -232,7 +239,7 @@ class Player:
             for i in range(len(moves)):
                 this_figure = moves[i][0]
                 this_figure.move(moves[i][1])
-                best_value = max(best_value, self.minimax2(depth - 1, alpha, beta, not is_maximising_player))
+                best_value = max(best_value, self.minimax_with_alpha_beta(depth - 1, alpha, beta, not is_maximising_player))
                 self.undo_move()
                 alpha = max(alpha, best_value)
                 if beta <= alpha:
@@ -243,7 +250,7 @@ class Player:
             for i in range(len(moves)):
                 this_figure = moves[i][0]
                 this_figure.move(moves[i][1])
-                best_value = min(best_value, self.minimax2(depth - 1, alpha, beta, not is_maximising_player))
+                best_value = min(best_value, self.minimax_with_alpha_beta(depth - 1, alpha, beta, not is_maximising_player))
                 self.undo_move()
                 beta = min(beta, best_value)
                 if beta <= alpha:
@@ -287,10 +294,10 @@ class AI(Player):
 
     def move(self):
         moves = self.available_moves()
-        best_move = self.minimax(2)
-        moves[best_move[0]][0].move(moves[best_move[0]][1])
-        # best_move = self.minimax_root(4, True)
-        # moves[best_move][0].move(moves[best_move][1])
+        # best_move = self.minimax(2)
+        # moves[best_move[0]][0].move(moves[best_move[0]][1])
+        best_move = self.minimax_root(4, True)
+        moves[best_move][0].move(moves[best_move][1])
 
 
 class ChessBoard:
