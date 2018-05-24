@@ -1,4 +1,4 @@
-import pygame, sys, os, time, random
+import pygame, sys, os, time
 import figures
 
 
@@ -11,7 +11,7 @@ class Game:
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        self.player1 = Player(self.board, "white", self)
+        self.player1 = AI(self.board, "white", self)
         self.player2 = AI(self.board, "black", self)
         self.queue = [self.player1, self.player2]
         self.counter = 0
@@ -123,13 +123,12 @@ class Player:
                             if self.selected_figure is False:
                                 self.is_figure_selected = False
                         elif self.is_figure_selected is True:
-                            if self.selected_figure.move(self.active_tile) is True:
+                            if self.selected_figure.try_move(self.active_tile) is True:
+                                self.selected_figure.move(self.active_tile)
                                 self.is_figure_selected = False
                                 turn_finished = True
                             else:
                                 self.is_figure_selected = False
-                    if event.key == pygame.K_x:
-                        self.undo_move()
                     if event.key == pygame.K_ESCAPE:
                         sys.exit()
 
@@ -214,7 +213,6 @@ class Player:
                 this_value = abs(figure.score)
                 if type(figure) is figures.TheKing:
                     return [i, this_value]
-
             this_figure.move(moves[i][1])
             if depth > 0:
                 this_value = -enemy.minimax(depth - 1)[1]
@@ -241,7 +239,7 @@ class Player:
 
     def minimax_with_alpha_beta(self, depth, alpha, beta, is_maximising_player):
         if depth is 0:
-            return self.evaluate_board()
+            return -self.evaluate_board()
 
         moves = self.available_moves()
         if is_maximising_player is True:
@@ -304,10 +302,16 @@ class AI(Player):
 
     def move(self):
         moves = self.available_moves()
-        best_move = self.minimax(2)
-        moves[best_move[0]][0].move(moves[best_move[0]][1])
-        # best_move = self.minimax_root(3, True)
-        # moves[best_move][0].move(moves[best_move][1])
+        if self.color is 'white':
+            best_move = self.minimax(2)
+            moves[best_move[0]][0].move(moves[best_move[0]][1])
+        else:   
+            best_move = self.minimax_root(3, True)
+            moves[best_move][0].move(moves[best_move][1])
+        #best_move = self.minimax(2)
+        #moves[best_move[0]][0].move(moves[best_move[0]][1])
+        #best_move = self.minimax_root(3, True)
+        #moves[best_move][0].move(moves[best_move][1])
 
 
 class ChessBoard:
