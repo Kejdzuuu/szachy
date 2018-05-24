@@ -6,12 +6,12 @@ class Game:
 
     def __init__(self):
         pygame.init()
-        self.size = self.width, self.height = 800, 800
+        self.size = self.width, self.height = 700, 700
         self.screen = pygame.display.set_mode(self.size)
         color1 = (239, 235, 170)
         color2 = (135, 99, 1)
         self.board = ChessBoard(self.screen, self.width, self.height, color1, color2)
-        self.player1 = AI(self.board, "white", self)
+        self.player1 = Player(self.board, "white", self)
         self.player2 = AI(self.board, "black", self)
         self.queue = [self.player1, self.player2]
         self.counter = 0
@@ -172,13 +172,28 @@ class Player:
             if figure.score > 0:
                 evaluation += figure.score + eval_board
             else:
-                evaluation += figure.score - eval_board
+                evaluation += -figure.score - eval_board
         for figure in enemy_figures:
             eval_board = figure.evaluation_board[figure.y][figure.x]
             if figure.score > 0:
                 evaluation += figure.score + eval_board
             else:
-                evaluation += figure.score - eval_board
+                evaluation += -figure.score - eval_board
+        return evaluation
+
+    def evaluate(self):
+        evaluation = 0
+        enemy_figures = game.get_enemy_figures(self.color)
+        for figure in self.figures:
+            if figure.score > 0:
+                evaluation += figure.score
+            else:
+                evaluation += figure.score
+        for figure in enemy_figures:
+            if figure.score > 0:
+                evaluation += figure.score
+            else:
+                evaluation += figure.score
         return evaluation
 
     def minimax(self, depth):
@@ -186,7 +201,6 @@ class Player:
         best_value = -9999
         this_value = 0
         moves = self.available_moves()
-        random.shuffle(moves)
         enemy = self.game.get_enemy(self.color)
         enemy_figures = game.get_enemy_figures(self.color)
         if len(moves) == 0:
@@ -196,15 +210,11 @@ class Player:
             figure = self.get_figure(moves[i][1], enemy_figures)
             if figure is False:
                 this_value = 0
-                if this_figure.last_position == moves[i][1]:
-                    if depth % 2 == 0:
-                        this_value -= 100
             else:
                 this_value = abs(figure.score)
                 if type(figure) is figures.TheKing:
                     return [i, this_value]
-            if this_value < best_value:
-                break
+
             this_figure.move(moves[i][1])
             if depth > 0:
                 this_value = -enemy.minimax(depth - 1)[1]
@@ -294,10 +304,10 @@ class AI(Player):
 
     def move(self):
         moves = self.available_moves()
-        # best_move = self.minimax(2)
-        # moves[best_move[0]][0].move(moves[best_move[0]][1])
-        best_move = self.minimax_root(4, True)
-        moves[best_move][0].move(moves[best_move][1])
+        best_move = self.minimax(2)
+        moves[best_move[0]][0].move(moves[best_move[0]][1])
+        # best_move = self.minimax_root(3, True)
+        # moves[best_move][0].move(moves[best_move][1])
 
 
 class ChessBoard:
@@ -376,6 +386,10 @@ cwd = os.getcwd()
 if cwd[-6:] == "szachy":
     cwd = cwd[0:-7]
     os.chdir(cwd)
+
+x = 100
+y = 30
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
 
 game = Game()
 move = [0,0]
